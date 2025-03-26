@@ -128,7 +128,28 @@ echo '<p>recursiveDigitSum</p>';
 echo recursiveDigitSum(365);
 echo '<hr />';
 
-// Не забыть про седьмую!!!!
+function diagonalDifference(array $array):int {
+    $mainDiagSum   = 0;
+    $secondDiagSum = 0;
+    $arrayLength   = count($array);
+
+    // Честно признаюсь, что подсмотрел решение с поиском суммы побочной диагонали
+
+    for ($i = 0; $i < count($array); $i++) {
+        $mainDiagSum   += $array[$i][$i];
+        $secondDiagSum += $array[$i][$arrayLength - 1 - $i];
+    }
+
+    return abs($mainDiagSum - $secondDiagSum);
+}
+
+echo '<p>diagonalDifference</p>';
+var_dump(diagonalDifference([
+    [1, 2, 3,],
+    [4, 5, 6,],
+    [9, 8, 9,],
+]));
+echo '<hr />';
 
 function plusMinus(array $array):void {
     $allNumbCounter = count($array);
