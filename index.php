@@ -191,7 +191,7 @@ function birthdayCakeCandles(array $candels) {
     $tallestCandleVal = $candels[$tallestCandleIdx];
     $counter          = 0;
     /*
-    Если индекс вхождения самой высокой свичи - это count(candels) - 1
+    Если индекс вхождения самой высокой свечи - это count(candels) - 1
     то значит последний элемент массива и он не дублируется
     возвращаю хардкодом 1
     */
