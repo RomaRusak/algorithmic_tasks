@@ -220,4 +220,12 @@ echo '<p>birthdayCakeCandles</p>';
 var_dump(birthdayCakeCandles([4, 5, 5, 3]));
 echo '<hr />';
 
-// Не забыть про десятую!!!!
+function timeConversion(string $s) {
+    $timeStamp = strtotime($s);
+
+    return date('H:i:s', $timeStamp);
+}
+
+echo '<p>timeConversion</p>';
+var_dump(timeConversion('12:01:00PM'));
+echo '<hr />';
