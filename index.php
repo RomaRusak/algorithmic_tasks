@@ -1,19 +1,21 @@
 <?php
 
-function minMaxSum(array $arr):void {
+function minMaxSum(array $arr): void
+{
     /*
     был конечно вариант отсортировать массив просто по возрастанию
     и расчитать суммы без 0 и последнего элемента, но так наверное было бы не интересно
-    так что заранее прошу прощения за код в 10 - 16 строчке
+    так что заранее прошу прощения за код в 9 - 16 строчке
     */
+    function findIdx($arr, $findIdxCallback)
+    {
+        return array_reduce($arr, function ($accumIdx, $elem) use ($arr, $findIdxCallback) {
+            return $findIdxCallback($arr[$accumIdx], $elem) ? $accumIdx : array_search($elem, $arr);
+        }, 0);
+    }
 
-    $maxValIdx = array_reduce($arr, function($accumIdx, $elem) use ($arr) {
-        return $arr[$accumIdx] > $elem ? $accumIdx : array_search($elem, $arr);
-    }, 0);
-
-    $minValIdx = array_reduce($arr, function($accumIdx, $elem) use ($arr) {
-        return $arr[$accumIdx] < $elem ? $accumIdx : array_search($elem, $arr);
-    }, 0);
+    $maxValIdx = findIdx($arr, fn($a, $b) => $a > $b);
+    $minValIdx = findIdx($arr, fn($a, $b) => $a < $b);
 
     $sums = ['minSum' => 0, 'maxSum' => 0];
 
@@ -28,22 +30,23 @@ function minMaxSum(array $arr):void {
     }
 
     echo implode(' ', $sums);
-    
 }
 
 echo "<p> minMaxSum </p>";
 minMaxSum([1, 33, 33, 6, 7]);
 echo '<hr />';
 
-function sumOfArrayElements(array $arr):int {
+function sumOfArrayElements(array $arr): int
+{
     return array_reduce($arr, fn($accum, $elem) => $accum += $elem);
 }
 
 echo '<p>SumOfArrayElements</p>';
-echo sumOfArrayElements([1,2,3]);
+echo sumOfArrayElements([1, 2, 3]);
 echo '<hr />';
 
-function iceCreamParlor(array $costs, int $amount_of_money) {
+function iceCreamParlor(array $costs, int $amount_of_money)
+{
     $indices = [];
 
     for ($i = 0; $i < count($costs); $i++) {
@@ -66,7 +69,8 @@ echo '<p>iceCreamParlor</p>';
 var_dump(iceCreamParlor([1, 4, 5, 8, 2], 12));
 echo '<hr />';
 
-function missingNumbers(array $arr, array $brr):array {
+function missingNumbers(array $arr, array $brr): array
+{
     $arrUniq = array_unique($arr);
     $brrUniq = array_unique($brr);
 
@@ -91,10 +95,11 @@ function missingNumbers(array $arr, array $brr):array {
 }
 
 echo '<p>missingNumbers</p>';
-var_dump(missingNumbers([7,2,5,3,5,3], [7,2,5,4,6,3,5,3]));
+var_dump(missingNumbers([7, 2, 5, 3, 5, 3], [7, 2, 5, 4, 6, 3, 5, 3]));
 echo '<hr />';
 
-function sherlockAndArray(array $arr) {
+function sherlockAndArray(array $arr)
+{
     for ($i = 1; $i < count($arr) - 1; $i++) {
         $slicedLefPart   = array_slice($arr, 0, $i);
         $slicedRightPart = array_slice($arr, $i + 1);
@@ -106,13 +111,15 @@ function sherlockAndArray(array $arr) {
             return $i;
         }
     }
+    return false;
 }
 
 echo '<p>sherlockAndArray</p>';
-var_dump(sherlockAndArray([23,10,8,33]));
+var_dump(sherlockAndArray([5, 6, 8, 11]));
 echo '<hr />';
 
-function recursiveDigitSum(int $number):int {
+function recursiveDigitSum(int $number): int
+{
     if (!is_array($number)) {
         $number = array_map(fn($elem) => +$elem, mb_str_split((string) $number));
     }
@@ -128,7 +135,8 @@ echo '<p>recursiveDigitSum</p>';
 echo recursiveDigitSum(365);
 echo '<hr />';
 
-function diagonalDifference(array $array):int {
+function diagonalDifference(array $array): int
+{
     $mainDiagSum   = 0;
     $secondDiagSum = 0;
     $arrayLength   = count($array);
@@ -151,7 +159,8 @@ var_dump(diagonalDifference([
 ]));
 echo '<hr />';
 
-function plusMinus(array $array):void {
+function plusMinus(array $array): void
+{
     $allNumbCounter = count($array);
 
     $counters = [
@@ -163,31 +172,31 @@ function plusMinus(array $array):void {
     for ($i = 0; $i < $allNumbCounter; $i++) {
         $number = $array[$i];
 
-        switch(true) {
+        switch (true) {
             case $number < 0:
                 $counters['negNumbCounter']++;
-            break;
+                break;
             case $number === 0:
                 $counters['zerNumbCounter']++;
-            break;
+                break;
             default:
                 $counters['posNumbCounter']++;
         }
     }
 
-    foreach($counters as $counter) {
+    foreach ($counters as $counter) {
         printf("%.6f <br/>", $counter / $allNumbCounter);
     }
 }
 
 echo '<p>plusMinus</p>';
-plusMinus([1,1,0,-1,-1]);
+plusMinus([1, 1, 0, -1, -1]);
 echo '<hr />';
 
-function birthdayCakeCandles(array $candels) {
-    $tallestCandleIdx = array_reduce($candels, function($accumIdx, $elem) use ($candels) {
-        return $candels[$accumIdx] > $elem ? $accumIdx : array_search($elem, $candels);
-    }, 0);
+function birthdayCakeCandles(array $candels)
+{
+    //findIdx задекларировал внутри самой первой задачи
+    $tallestCandleIdx = findIdx($candels, fn($a, $b) => $a > $b);
     $tallestCandleVal = $candels[$tallestCandleIdx];
     $counter          = 0;
     /*
@@ -208,7 +217,7 @@ function birthdayCakeCandles(array $candels) {
 }
 
 echo '<p>birthdayCakeCandles</p>';
-var_dump(birthdayCakeCandles([4,5,5,3]));
+var_dump(birthdayCakeCandles([4, 5, 5, 3]));
 echo '<hr />';
 
 // Не забыть про десятую!!!!
