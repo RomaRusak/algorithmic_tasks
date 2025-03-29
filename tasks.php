@@ -5,7 +5,7 @@ function minMaxSum(array $arr): void
     /*
     был конечно вариант отсортировать массив просто по возрастанию
     и расчитать суммы без 0 и последнего элемента, но так наверное было бы не интересно
-    так что заранее прошу прощения за код в 9 - 16 строчке
+    так что заранее прошу прощения за код в 10 - 18 строчке
     */
     function findIdx($arr, $findIdxCallback)
     {
@@ -19,13 +19,13 @@ function minMaxSum(array $arr): void
 
     $sums = ['minSum' => 0, 'maxSum' => 0];
 
-    for ($i = 0; $i < count($arr); $i++) {
-        if ($i !== $maxValIdx) {
-            $sums['minSum'] += $arr[$i];
+    foreach ($arr as $idx => $elem) {
+        if ($idx !== $maxValIdx) {
+            $sums['minSum'] += $elem;
         }
 
-        if ($i !== $minValIdx) {
-            $sums['maxSum'] += $arr[$i];
+        if ($idx !== $minValIdx) {
+            $sums['maxSum'] += $elem;
         }
     }
 
@@ -33,7 +33,7 @@ function minMaxSum(array $arr): void
 }
 
 echo "<p> minMaxSum </p>";
-minMaxSum([1, 33, 33, 6, 7]);
+minMaxSum([1, 33, 53, 0, 7]);
 echo '<hr />';
 
 function sumOfArrayElements(array $arr): int
@@ -47,22 +47,21 @@ echo '<hr />';
 
 function iceCreamParlor(array $costs, int $amount_of_money)
 {
-    $indices = [];
+    $selectedPairKeys = [];
+    $allKeys          = array_keys($costs);
 
-    for ($i = 0; $i < count($costs); $i++) {
-        if ($i !== count($costs) - 1) {
-            for ($j = $i + 1; $j < count($costs); $j++) {
-                if ($costs[$i] + $costs[$j] === $amount_of_money) {
-                    $indices[] = $i;
-                    $indices[] = $j;
+    foreach ($allKeys as $i) {
+        foreach (array_slice($allKeys, $i + 1) as $j) {
+            if ($costs[$i] + $costs[$j] === $amount_of_money) {
+                $selectedPairKeys[] = $i;
+                $selectedPairKeys[] = $j;
 
-                    break 2;
-                }
+                break 2;
             }
         }
     }
 
-    return $indices;
+    return $selectedPairKeys;
 }
 
 echo '<p>iceCreamParlor</p>';
@@ -76,18 +75,18 @@ function missingNumbers(array $arr, array $brr): array
 
     $missingNumbers = [];
 
-    for ($i = 0; $i < count($brrUniq); $i++) {
+    foreach ($brrUniq as $brrElem) {
         $isFound = false;
 
-        for ($j = 0; $j < count($arrUniq); $j++) {
-            if ($brrUniq[$i] === $arrUniq[$j]) {
+        foreach ($arrUniq as $arrElem) {
+            if ($brrElem === $arrElem) {
                 $isFound = true;
                 break;
             }
         }
 
         if (!$isFound) {
-            $missingNumbers[] = $brrUniq[$i];
+            $missingNumbers[] = $brrElem;
         }
     }
 
@@ -100,17 +99,15 @@ echo '<hr />';
 
 function sherlockAndArray(array $arr)
 {
-    for ($i = 1; $i < count($arr) - 1; $i++) {
-        $slicedLefPart   = array_slice($arr, 0, $i);
-        $slicedRightPart = array_slice($arr, $i + 1);
-        $getSum          = fn($accum, $elem) => $accum += $elem;
-        $lefPartSum      = array_reduce($slicedLefPart, $getSum);
-        $rightPartSum    = array_reduce($slicedRightPart, $getSum);
+    foreach (array_keys($arr) as $idx) {
+        $slicedLefPart   = array_slice($arr, 0, $idx);
+        $slicedRightPart = array_slice($arr, $idx + 1);
 
-        if ($lefPartSum === $rightPartSum) {
-            return $i;
+        if (array_sum($slicedLefPart) === array_sum($slicedRightPart)) {
+            return $idx;
         }
     }
+
     return false;
 }
 
@@ -137,15 +134,22 @@ echo '<hr />';
 
 function diagonalDifference(array $array): int
 {
+    $rowsCounter            = count($array);
+    $verifiedColumns        = array_filter($array, function ($elem) use ($rowsCounter) {
+        return count($elem) === $rowsCounter;
+    });
+    $verifiedColumnsCounter = count($verifiedColumns);
+
+    if ($rowsCounter !== $verifiedColumnsCounter) {
+        return 0;
+    }
+
     $mainDiagSum   = 0;
     $secondDiagSum = 0;
-    $arrayLength   = count($array);
 
-    // Честно признаюсь, что подсмотрел решение с поиском суммы побочной диагонали
-
-    for ($i = 0; $i < count($array); $i++) {
-        $mainDiagSum   += $array[$i][$i];
-        $secondDiagSum += $array[$i][$arrayLength - 1 - $i];
+    foreach ($array as $idx => $row) {
+        $mainDiagSum   += $row[$idx];
+        $secondDiagSum += $row[count($row) - 1 - $idx];
     }
 
     return abs($mainDiagSum - $secondDiagSum);
@@ -155,7 +159,7 @@ echo '<p>diagonalDifference</p>';
 var_dump(diagonalDifference([
     [1, 2, 3,],
     [4, 5, 6,],
-    [9, 8, 9,],
+    [12, 8, 9,],
 ]));
 echo '<hr />';
 
@@ -169,9 +173,7 @@ function plusMinus(array $array): void
         'posNumbCounter' => 0,
     ];
 
-    for ($i = 0; $i < $allNumbCounter; $i++) {
-        $number = $array[$i];
-
+    foreach ($array as $number) {
         switch (true) {
             case $number < 0:
                 $counters['negNumbCounter']++;
@@ -185,7 +187,7 @@ function plusMinus(array $array): void
     }
 
     foreach ($counters as $counter) {
-        printf("%.6f <br/>", $counter / $allNumbCounter);
+        echo number_format($counter / $allNumbCounter, 6) . '<br />';
     }
 }
 
@@ -221,7 +223,8 @@ echo '<p>birthdayCakeCandles</p>';
 var_dump(birthdayCakeCandles([4, 5, 5, 3]));
 echo '<hr />';
 
-function timeConversion(string $s) {
+function timeConversion(string $s)
+{
     $timeStamp = strtotime($s);
 
     return date('H:i:s', $timeStamp);
